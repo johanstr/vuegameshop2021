@@ -96,13 +96,41 @@ export default new Vuex.Store(
         } else {
           state.cart = [ ...state.cart, game ]
         }
-        localStorage.setItem('cart', state.cart);
+      },
+      increaseAmountForGame(state, id) {
+        let index = state.cart.findIndex( item => item.id === id )
+
+        if(index > -1) {
+          state.cart[index].amount++;
+        }
+      },
+      decreaseAmountForGame(state, id) {
+        let index = state.cart.findIndex( item => item.id === id )
+
+        if(index > -1) {
+          if(state.cart[index].amount > 1)
+            state.cart[index].amount--
+        }
+      },
+      deleteItemFromCart(state, id) {
+        let new_cart = state.cart.filter(item => item.id !== id)
+
+        state.cart = new_cart
       }
     },
     // Zijn toegankelijk voor andere components
     actions: {
       addGameToCart({ commit }, game) {
         commit('addGameToCart', game)
+      },
+      incAmountForGame({ commit }, id ) {
+        commit('increaseAmountForGame', id)
+      },
+      decAmountForGame({ commit }, id ) {
+        commit('decreaseAmountForGame', id)
+      },
+      deleteGameFromCart({ commit }, id) {
+        commit('deleteItemFromCart', id)
       }
     },
     modules: {
@@ -119,6 +147,12 @@ export default new Vuex.Store(
         }
 
         return amount
+      },
+      getShoppingCart(state) {
+        return state.cart;
+      },
+      isCartEmpty(state) {
+        return state.cart.length === 0;
       }
     }
   }
