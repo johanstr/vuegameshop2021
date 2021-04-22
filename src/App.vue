@@ -26,6 +26,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   // Property (Kenmerk, Eigenschap)
@@ -40,10 +41,24 @@ export default {
   data: () => ({
 
   }),
+  methods: {
+    ...mapActions([
+      'loadGames'
+    ]),
+  },
   computed: {
     ...mapGetters([
       'countCartItems'
     ])
+  },
+  async mounted() {
+    await fetch('https://games-api.ao-alfacollege.nl/api/games')
+        .then( response => response.json() )
+        .then( data => {
+          console.log(data);
+          this.loadGames(data)    // Action in de state manager
+        })
+        .catch( error => console.log(error) )
   }
 };
 </script>
